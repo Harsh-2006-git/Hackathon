@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Menu,
   X,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 
 const HomePage2 = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -28,51 +30,94 @@ const HomePage2 = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      // mobile/tablet only
+      const handleScroll = () => {
+        const cards = document.querySelectorAll(".service-card");
+        const scrollTop = window.scrollY;
+
+        cards.forEach((card, idx) => {
+          const offsetTop = card.offsetTop;
+          if (scrollTop + window.innerHeight / 2 > offsetTop) {
+            card.style.transform = `translateY(-${
+              (scrollTop + window.innerHeight / 2 - offsetTop) * 0.1
+            }px)`;
+            card.style.zIndex = 100 - idx; // make top card above previous
+          } else {
+            card.style.transform = "translateY(0)";
+            card.style.zIndex = 1;
+          }
+        });
+      };
+
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, []);
+
   const services = [
     {
-      title: "Temple Visits",
-      description: "Guided tours to sacred temples with proper rituals",
-      icon: "🕉️",
+      title: "Priority Ticketing System",
+      description:
+        "Book your yatra tickets with priority allocation and time slots",
+      icon: "🎫",
+      features: ["Time-slot booking", "VIP priority", "Real-time availability"],
+    },
+    {
+      title: "Urban Mobility & Planning",
+      description:
+        "Optimized routes for pilgrims with shuttle & vehicle planning",
+      icon: "🛣️",
       features: [
-        "Mahakaleshwar Darshan",
-        "Kal Bhairav Temple",
-        "Harsiddhi Temple",
+        "Shuttle scheduling",
+        "Traffic-aware routes",
+        "Smart junction management",
       ],
     },
     {
-      title: "Accommodation",
-      description: "Comfortable stays near holy sites",
-      icon: "🏨",
-      features: ["Clean Rooms", "Vegetarian Meals", "24/7 Service"],
+      title: "Routes & Maps",
+      description:
+        "Interactive maps to navigate temples, ghats, and nearby facilities",
+      icon: "🗺️",
+      features: [
+        "Temple & ghat navigation",
+        "Parking info",
+        "Shortest path guidance",
+      ],
     },
     {
-      title: "Transportation",
-      description: "Safe and reliable travel arrangements",
-      icon: "🚗",
-      features: ["AC Vehicles", "Experienced Drivers", "Flexible Timing"],
-    },
-    {
-      title: "Puja Services",
-      description: "Complete ritual arrangements by qualified priests",
-      icon: "🙏",
-      features: ["Rudrabhishek", "Bhasma Aarti", "Special Prayers"],
-    },
-    {
-      title: "Group Tours",
-      description: "Organized spiritual journeys for families and groups",
-      icon: "👥",
-      features: ["Custom Packages", "Group Discounts", "Expert Guides"],
+      title: "Crowd Detection & Alerts",
+      description: "Monitor crowd density in temples & ghats for safety",
+      icon: "📊",
+      features: [
+        "Real-time heatmaps",
+        "Density alerts",
+        "Prevent overcrowding",
+      ],
     },
     {
       title: "Live Darshan",
-      description: "Watch temple ceremonies from anywhere",
+      description: "Watch temple ceremonies from anywhere with HD streaming",
       icon: "📹",
-      features: ["HD Quality", "Multiple Cameras", "24/7 Streaming"],
+      features: [
+        "Multiple camera views",
+        "24/7 streaming",
+        "Mobile-friendly access",
+      ],
+    },
+    {
+      title: "AI-based Lost & Found",
+      description:
+        "Locate lost items with AI-powered tracking and notifications",
+      icon: "🔍",
+      features: ["Item registration", "AI image matching", "Real-time alerts"],
     },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 text-gray-800 leading-relaxed font-sans">
+      {/* Header */}
       {/* Header */}
       <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
@@ -84,7 +129,7 @@ const HomePage2 = () => {
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-4 flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center gap-3 text-2xl font-bold text-orange-800 hover:scale-105 transition-transform duration-300">
-            <div className="text-3xl animate-pulse">🕉</div>
+            <div className="text-3xl">🕉</div>
             <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
               Ujjain Yatra
             </span>
@@ -93,27 +138,64 @@ const HomePage2 = () => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:block">
             <ul className="flex gap-8">
-              {["Home", "Services", "About", "Gallery", "Contact"].map(
-                (item) => (
-                  <li key={item}>
-                    <a
-                      href={`#${item.toLowerCase()}`}
-                      className="font-semibold text-gray-700 transition-all duration-300 hover:text-orange-600 relative group px-2 py-1"
-                    >
-                      {item}
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
-                    </a>
-                  </li>
-                )
-              )}
+              {[
+                { name: "Home", path: "/" },
+                { name: "Services", path: "/services" },
+                { name: "About", path: "/about" },
+                { name: "Book", path: "/book" },
+                { name: "Darshan", path: "/darshan" },
+                { name: "Contact", path: "/contact" },
+              ].map((item) => (
+                <li key={item.name}>
+                  <a
+                    href={item.path}
+                    className="font-semibold text-gray-700 transition-all duration-300 hover:text-orange-600 relative group px-2 py-1"
+                  >
+                    {item.name}
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </nav>
 
-          {/* CTA Button Desktop */}
-          <div className="hidden lg:block">
-            <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105 transform">
+          {/* Right Side (Profile Dropdown + CTA) */}
+          <div className="hidden lg:flex items-center gap-6">
+            {/* CTA */}
+            <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105">
               Book Yatra
             </button>
+
+            {/* Profile Dropdown */}
+            <div className="relative group">
+              <button className="w-12 h-12 rounded-full bg-orange-500 text-white flex items-center justify-center text-2xl">
+                🧑‍💻
+              </button>
+
+              <div className="absolute right-0 mt-3 w-44 bg-white rounded-xl shadow-xl border border-orange-100 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 z-50">
+                <ul className="p-2">
+                  <li>
+                    <a
+                      href="/profile"
+                      className="block px-4 py-2 rounded-lg hover:bg-orange-50 text-gray-700"
+                    >
+                      👤 Profile
+                    </a>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("token");
+                        window.location.href = "/login";
+                      }}
+                      className="w-full text-left px-4 py-2 rounded-lg hover:bg-orange-50 text-gray-700"
+                    >
+                      🚪 Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -127,44 +209,55 @@ const HomePage2 = () => {
               <Menu className="w-6 h-6 text-orange-600" />
             )}
           </button>
+        </div>
 
-          {/* Mobile Navigation */}
-          <div
-            className={`lg:hidden fixed top-0 right-0 w-full h-screen bg-white/95 backdrop-blur-md flex flex-col justify-center items-center transition-all duration-500 transform ${
-              isMenuOpen
-                ? "translate-x-0 opacity-100"
-                : "translate-x-full opacity-0"
-            }`}
-          >
-            <ul className="flex flex-col gap-8 text-center">
-              {["Home", "Services", "About", "Gallery", "Contact"].map(
-                (item, index) => (
-                  <li
-                    key={item}
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                    className={isMenuOpen ? "animate-fadeInUp" : ""}
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="lg:hidden absolute top-16 right-4 w-60 bg-white rounded-xl shadow-2xl border border-orange-100 z-50">
+            <ul className="flex flex-col gap-3 px-4 py-4">
+              {[
+                { name: "Home", path: "/" },
+                { name: "Services", path: "/services" },
+                { name: "About", path: "/about" },
+                { name: "Book", path: "/book" },
+                { name: "Darshan", path: "/darshan" },
+                { name: "Contact", path: "/contact" },
+              ].map((item) => (
+                <li key={item.name}>
+                  <a
+                    href={item.path}
+                    className="block font-semibold text-gray-700 hover:text-orange-600 px-2 py-1 rounded-lg hover:bg-orange-50"
+                    onClick={() => setIsMenuOpen(false)}
                   >
-                    <a
-                      href={`#${item.toLowerCase()}`}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="text-2xl font-semibold text-gray-700 transition-colors duration-300 hover:text-orange-600"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
-              <li
-                className={isMenuOpen ? "animate-fadeInUp" : ""}
-                style={{ animationDelay: "0.5s" }}
-              >
-                <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full font-semibold text-xl">
-                  Book Yatra
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+
+              {/* Profile + Logout in Mobile */}
+              <li className="border-t border-orange-100 pt-3">
+                <a
+                  href="/profile"
+                  className="block px-2 py-2 rounded-lg hover:bg-orange-50 text-gray-700"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  👤 Profile
+                </a>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    window.location.href = "/login";
+                  }}
+                  className="w-full text-left px-2 py-2 rounded-lg hover:bg-orange-50 text-gray-700"
+                >
+                  🚪 Logout
                 </button>
               </li>
             </ul>
           </div>
-        </div>
+        )}
       </header>
 
       {/* Hero Section */}
@@ -198,25 +291,22 @@ const HomePage2 = () => {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-5xl animate-fadeInUp">
-          <div className="mb-6">
-            <div className="text-6xl md:text-8xl mb-4 animate-pulse">🕉️</div>
-          </div>
-          <h1 className="text-4xl md:text-7xl font-bold mb-6 drop-shadow-2xl bg-gradient-to-r from-orange-200 to-yellow-200 bg-clip-text text-transparent">
+        <div className="relative z-10 max-w-5xl px-4 animate-fadeInUp">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-2xl bg-gradient-to-r from-orange-200 to-yellow-200 bg-clip-text text-transparent">
             Welcome to Ujjain Yatra
           </h1>
-          <p className="text-xl md:text-3xl mb-8 drop-shadow-lg font-light">
+          <p className="text-lg md:text-xl lg:text-2xl mb-6 drop-shadow-lg font-light">
             Begin Your Sacred Journey to the Holy City
           </p>
-          <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto opacity-90">
+          <p className="text-base md:text-lg mb-8 max-w-3xl mx-auto opacity-90">
             Experience divine blessings at Mahakaleshwar Jyotirlinga and immerse
             yourself in centuries of spiritual heritage
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white border-2 border-orange-500 rounded-full font-bold text-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 transform">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white border-2 border-orange-500 rounded-full font-bold text-base transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 transform">
               Start Your Journey
             </button>
-            <button className="px-8 py-4 bg-transparent text-white border-2 border-white rounded-full font-bold text-lg transition-all duration-300 hover:bg-white/20 hover:-translate-y-2 transform backdrop-blur-sm">
+            <button className="px-6 py-3 bg-transparent text-white border-2 border-white rounded-full font-bold text-base transition-all duration-300 hover:bg-white/20 hover:-translate-y-2 transform backdrop-blur-sm">
               Watch Live Darshan
             </button>
           </div>
@@ -226,7 +316,7 @@ const HomePage2 = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 lg:px-8 py-20">
         {/* Services Section */}
-        <section className="mb-20">
+        <section className="mb-20 relative">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
               Our Sacred Services
@@ -241,8 +331,22 @@ const HomePage2 = () => {
             {services.map((service, index) => (
               <div
                 key={service.title}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl hover:bg-white group border border-orange-100"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="service-card bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center transition-transform duration-500 group border border-orange-100 cursor-pointer"
+                style={{ animationDelay: `${index * 0.1}s`, zIndex: 1 }}
+                onClick={() => {
+                  if (service.title === "Routes & Maps") {
+                    window.location.href = "/map.html"; // works now
+                  }
+                  if (service.title === "Crowd Detection & Alerts") {
+                    window.location.href = "/camera.html"; // works now
+                  }
+                  if (service.title === "Live Darshan") {
+                    navigate("/live-darshan"); // works now
+                  }
+                  if (service.title === "AI-based Lost & Found") {
+                    navigate("/lostFound"); // works now
+                  }
+                }}
               >
                 <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">
                   {service.icon}
@@ -360,7 +464,7 @@ const HomePage2 = () => {
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `url("https://img.freepik.com/premium-photo/indian-historical-temple-painting-watercolor-effect_181203-26134.jpg")`,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
             }}
           ></div>
         </div>
@@ -536,7 +640,7 @@ const HomePage2 = () => {
       {/* Floating Live Darshan Button */}
       <a
         href="/live-darshan"
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-4 rounded-full shadow-2xl transition-all duration-300 animate-pulse flex items-center gap-3 font-semibold"
+        className="hidden sm:flex fixed bottom-6 right-6 z-50 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white px-6 py-4 rounded-full shadow-2xl transition-all duration-300 animate-pulse items-center gap-3 font-semibold"
       >
         <span className="w-3 h-3 bg-white rounded-full animate-ping"></span>
         <span>🔴 Live Darshan</span>

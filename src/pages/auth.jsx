@@ -14,6 +14,24 @@ import {
 const API_BASE =
   import.meta.env.VITE_API_BASE || "http://localhost:3001/api/v1/auth";
 
+// ✅ JWT decode helper
+const decodeJWT = (token) => {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Invalid token", e);
+    return null;
+  }
+};
+
 const Auth = ({ setIsAuthenticated }) => {
   const [formType, setFormType] = useState("login");
   const [formData, setFormData] = useState({
@@ -99,6 +117,9 @@ const Auth = ({ setIsAuthenticated }) => {
           setClientId(data.client_id);
           setFormType("verify");
           localStorage.setItem("token", data.token);
+          console.log("REGISTER → JWT Token:", data.token);
+          console.log("REGISTER → Decoded Token:", decodeJWT(data.token));
+          console.log("REGISTER → Full Response:", data);
         } else {
           setMessage(data.message || "Registration failed");
         }
@@ -138,6 +159,9 @@ const Auth = ({ setIsAuthenticated }) => {
         if (response.ok) {
           setMessage("Welcome to Ujjain Yatra! Login successful.");
           localStorage.setItem("token", data.token);
+          console.log("VERIFY → JWT Token:", data.token);
+          console.log("VERIFY → Decoded Token:", decodeJWT(data.token));
+          console.log("VERIFY → Full Response:", data);
           setIsAuthenticated(true);
         } else {
           setMessage(data.message || "Login failed");
@@ -178,6 +202,10 @@ const Auth = ({ setIsAuthenticated }) => {
         if (response.ok) {
           setMessage(data.message);
           setFormType("login");
+          localStorage.setItem("token", data.token);
+          console.log("LOGIN → JWT Token:", data.token);
+          console.log("LOGIN → Decoded Token:", decodeJWT(data.token));
+          console.log("LOGIN → Full Response:", data);
         } else {
           setMessage(data.message || "Password reset failed");
         }

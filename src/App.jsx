@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Auth from "./pages/auth";
-import Home from "./pages/index";
-import Navbar from "./pages/navbar";
+import Home from "./pages/index1";
+import LostAndFound from "./pages/LostAndFound";
+import LiveDarshan from "./pages/LiveDarshan";
 import ProtectedRoute from "./components/PrivateRoute";
+import ProfilePage from "./pages/profile";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,10 +19,6 @@ function App() {
 
   return (
     <div className="app">
-      <Navbar
-        isAuthenticated={isAuthenticated}
-        setIsAuthenticated={setIsAuthenticated}
-      />
       <Routes>
         <Route
           path="/"
@@ -41,6 +39,9 @@ function App() {
           }
         />
         <Route path="*" element={<Navigate to="/auth" />} />
+        <Route path="/live-darshan" element={<LiveDarshan />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/lostFound" element={<LostAndFound />} />
       </Routes>
     </div>
   );
