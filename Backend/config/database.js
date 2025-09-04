@@ -1,28 +1,35 @@
+import * as fs from "fs";
 import * as dotenv from "dotenv";
 dotenv.config();
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize({
-  dialect: "mysql",
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  dialectOptions: {
-    ssl: {
-      rejectUnauthorized: false, // 👈 disables strict cert check
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    dialect: "mysql",
+    dialectOptions: {
+      ssl:
+        process.env.DB_SSL === "true"
+          ? {
+              ca: fs.readFileSync(process.env.DB_CA_CERT_PATH),
+              rejectUnauthorized: true,
+            }
+          : undefined,
+      connectTimeout: 60000,
     },
-    connectTimeout: 60000,
-  },
-  logging: false,
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
-  },
-});
+    logging: false,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  }
+);
 
 const connectDB = async () => {
   console.log("Database connection attempt...");
