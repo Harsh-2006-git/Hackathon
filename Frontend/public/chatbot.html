@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healthcare Chatbot</title>
+    <link rel="icon" href="logo.png" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: #333;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Background Image with Blur */
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("https://img.freepik.com/premium-photo/indian-historical-temple-painting-watercolor-effect_181203-26134.jpg")
+          no-repeat center center/cover;
+        filter: blur(8px);
+        z-index: -1;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 800px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .chat-container {
+        max-height: 400px;
+        overflow-y: auto;
+        text-align: left;
+        margin: 20px 0;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .user-chat-box,
+      .ai-chat-box {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 15px;
+        color: white;
+        font-size: 1rem;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.5s ease;
+      }
+
+      .user-chat-box {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        align-self: flex-end;
+        border-radius: 15px 15px 0 15px;
+      }
+
+      .ai-chat-box {
+        background: linear-gradient(135deg, #43cea2, #185a9d);
+        align-self: flex-start;
+        border-radius: 15px 15px 15px 0;
+      }
+
+      .profile-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .loading img {
+        width: 30px;
+        height: 30px;
+      }
+
+      .prompt-area {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      input {
+        width: 60%;
+        padding: 12px;
+        border-radius: 25px 0 0 25px;
+        border: 2px solid #ccc;
+        outline: none;
+        font-size: 1rem;
+        background: white;
+        color: #333;
+        transition: all 0.3s ease;
+      }
+
+      input::placeholder {
+        color: rgba(0, 0, 0, 0.5);
+      }
+
+      input:focus {
+        border-color: #6a11cb;
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 0 25px 25px 0;
+        background: #ff6f61; /* Coral color */
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(255, 111, 97, 0.4);
+      }
+
+      .voice-btn {
+        border-radius: 25px;
+        background: #2575fc;
+        color: white;
+      }
+
+      .voice-btn:hover {
+        box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
+      }
+
+      .stop-btn {
+        background: #dc3545;
+        border-radius: 25px;
+      }
+
+      .stop-btn:hover {
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+      }
+
+      .language-select {
+        margin-top: 10px;
+        padding: 8px;
+        border-radius: 25px;
+        border: 2px solid #ccc;
+        outline: none;
+        font-size: 1rem;
+        background: white;
+        color: #333;
+      }
+
+      /* Jarvis-like Animation */
+      .jarvis-animation {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: pulse 1.5s infinite;
+        z-index: 1000;
+        display: none; /* Hidden by default */
+      }
+
+      .jarvis-animation::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 5px solid cyan;
+        border-radius: 50%;
+        animation: ripple 2s infinite;
+      }
+
+      .jarvis-animation::after {
+        content: "Listening...";
+        color: white;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+
+      @keyframes ripple {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>UJJAIN YATRA CHATBOT</h1>
+      <div class="chat-container" id="chat-container"></div>
+      <div class="prompt-area">
+        <input type="text" id="prompt" placeholder="Type or use voice..." />
+        <button class="send-btn" id="send-btn">Send</button>
+        <button class="voice-btn" id="voice-btn">🎤</button>
+        <button class="stop-btn" id="stop-btn">Stop</button>
+      </div>
+      <select class="language-select" id="language-select">
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="ta">Tamil</option>
+        <option value="te">Telugu</option>
+        <option value="bn">Bengali</option>
+        <option value="mr">Marathi</option>
+        <option value="gu">Gujarati</option>
+        <option value="kn">Kannada</option>
+        <option value="ml">Malayalam</option>
+      </select>
+    </div>
+
+    <!-- Jarvis-like Animation -->
+    <div class="jarvis-animation" id="jarvis-animation"></div>
+
+    <!-- Loading GIF -->
+    <img
+      src="https://i.gifer.com/ZZ5H.gif"
+      alt="Loading..."
+      style="display: none; width: 50px; height: 50px"
+      id="loading-gif"
+    />
+
+    <!-- Profile Images -->
+    <img
+      src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+      alt="User"
+      style="display: none"
+      id="user-img"
+    />
+    <img
+      src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
+      alt="AI Bot"
+      style="display: none"
+      id="ai-img"
+    />
+
+    <script>
+      let promptInput = document.getElementById("prompt");
+      let sendBtn = document.getElementById("send-btn");
+      let voiceBtn = document.getElementById("voice-btn");
+      let stopBtn = document.getElementById("stop-btn");
+      let chatContainer = document.getElementById("chat-container");
+      let loadingGif = document.getElementById("loading-gif");
+      let userImg = document.getElementById("user-img");
+      let aiImg = document.getElementById("ai-img");
+      let jarvisAnimation = document.getElementById("jarvis-animation");
+      let languageSelect = document.getElementById("language-select");
+
+      let apiUrl =
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDQBDrSk8uuRaMZWLmwfvMX9Se0GDJH6GA";
+
+      let abortController = new AbortController(); // For aborting fetch requests
+      let recognition; // For speech recognition
+      let isSpeaking = false; // Track if TTS is active
+
+      function createChatBox(message, className, imgSrc) {
+        let div = document.createElement("div");
+        div.classList.add(className);
+        div.innerHTML = `
+          <img src="${imgSrc}" class="profile-img" alt="${className}" />
+          <span>${message}</span>
+        `;
+        chatContainer.appendChild(div);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      async function getApiResponse(userMessage) {
+        // Abort any ongoing request
+        abortController.abort();
+        abortController = new AbortController();
+
+        // Stop any ongoing TTS
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          isSpeaking = false;
+        }
+
+        // Show loading GIF
+        let loadingDiv = document.createElement("div");
+        loadingDiv.classList.add("loading", "ai-chat-box");
+        loadingDiv.innerHTML = `
+          <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." />
+          <span>Thinking...</span>
+        `;
+        chatContainer.appendChild(loadingDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        try {
+          let response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: userMessage }] }],
+            }),
+            signal: abortController.signal, // Attach the abort signal
+          });
+          let data = await response.json();
+          let aiResponse =
+            data?.candidates[0]?.content?.parts[0]?.text ||
+            "Sorry, I couldn't understand.";
+
+          // Remove loading GIF and display AI response
+          chatContainer.removeChild(loadingDiv);
+          createChatBox(aiResponse, "ai-chat-box", aiImg.src);
+          speakText(aiResponse);
+        } catch (e) {
+          if (e.name === "AbortError") {
+            console.log("Request aborted");
+          } else {
+            console.error(e);
+            chatContainer.removeChild(loadingDiv);
+            createChatBox("Error fetching response.", "ai-chat-box", aiImg.src);
+          }
+        }
+      }
+
+      function speakText(text) {
+        if (isSpeaking) {
+          window.speechSynthesis.cancel(); // Stop ongoing TTS
+        }
+        let utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = languageSelect.value; // Set language for TTS
+        utterance.onstart = () => (isSpeaking = true);
+        utterance.onend = () => (isSpeaking = false);
+        window.speechSynthesis.speak(utterance);
+      }
+
+      sendBtn.addEventListener("click", function () {
+        let userMessage = promptInput.value.trim();
+        if (!userMessage) return;
+
+        // Stop ongoing speech recognition
+        if (recognition) {
+          recognition.stop();
+        }
+
+        createChatBox(userMessage, "user-chat-box", userImg.src);
+        promptInput.value = "";
+        getApiResponse(userMessage);
+      });
+
+      voiceBtn.addEventListener("click", function () {
+        // Stop any ongoing speech recognition
+        if (recognition) {
+          recognition.stop();
+        }
+
+        // Show Jarvis-like animation
+        jarvisAnimation.style.display = "flex";
+
+        recognition = new (window.SpeechRecognition ||
+          window.webkitSpeechRecognition)();
+        recognition.lang = languageSelect.value; // Set recognition language
+        recognition.start();
+
+        recognition.onresult = function (event) {
+          let voiceInput = event.results[0][0].transcript;
+          promptInput.value = voiceInput;
+
+          // Hide Jarvis-like animation
+          jarvisAnimation.style.display = "none";
+
+          // Send the voice input to the chatbot API
+          createChatBox(voiceInput, "user-chat-box", userImg.src);
+          getApiResponse(voiceInput);
+        };
+
+        recognition.onend = function () {
+          // Hide Jarvis-like animation when recognition ends
+          jarvisAnimation.style.display = "none";
+        };
+      });
+
+      stopBtn.addEventListener("click", function () {
+        // Abort the current API request
+        abortController.abort();
+        console.log("Process stopped by user");
+
+        // Stop ongoing TTS
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          isSpeaking = false;
+        }
+
+        // Stop ongoing speech recognition
+        if (recognition) {
+          recognition.stop();
+        }
+
+        // Hide Jarvis-like animation
+        jarvisAnimation.style.display = "none";
+      });
+    </script>
+  </body>
+</html>
