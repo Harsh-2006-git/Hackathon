@@ -1,19 +1,9 @@
 <h1 align="center">🌍 Ujjain Yatra – Smart Pilgrimage Assistance System</h1>
 
 <p align="center">
-  <img src="./assets/banner.png" alt="Project Banner" width="800"/>
-</p>
-
-<p align="center">
   🚀 Digital Solutions for <b>Simhastha 2028</b> – Safer, Smarter, Seamless  
 </p>
 
-<p align="center">
-  <a href="https://ujjainyatra-harsh09.vercel.app/"><img src="https://img.shields.io/badge/Live-Demo-orange?style=for-the-badge&logo=vercel"/></a>
-  <img src="https://img.shields.io/badge/Backend-Node.js-green?style=for-the-badge&logo=nodedotjs"/>
-  <img src="https://img.shields.io/badge/Frontend-React-blue?style=for-the-badge&logo=react"/>
-  <img src="https://img.shields.io/badge/Database-MySQL-teal?style=for-the-badge&logo=mysql"/>
-</p>
 
 ---
 
