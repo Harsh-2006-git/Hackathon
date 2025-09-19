@@ -4,7 +4,6 @@
   🚀 Digital Solutions for <b>Simhastha 2028</b> – Safer, Smarter, Seamless  
 </p>
 
-
 ---
 
 ## ✨ Overview  
@@ -20,8 +19,7 @@ This project is built for **Simhastha 2028** under the theme **Smart Mobility & 
 
 🔗 **Hosted Link:** [Click Here](https://ujjainyatra-harsh09.vercel.app/)  
 
-
-<img width="1883" height="920" alt="image" src="https://github.com/user-attachments/assets/b05370ab-00fc-4f7a-9b06-03bf9f6517b9" />
+![Dashboard Screenshot](https://github.com/user-attachments/assets/b05370ab-00fc-4f7a-9b06-03bf9f6517b9)
 
 ---
 
@@ -44,25 +42,26 @@ Frontend/
  ┣ 📜 vite.config.js # Vite config
 
 ⚙️ Tech Stack
-🌐 Frontend
 
+🌐 Frontend
 ⚛️ React.js + Vite
 🎨 TailwindCSS
 🗺️ Leaflet.js (Smart Maps)
 🔄 Socket.IO (Realtime Updates)
 
 ⚡ Backend
-
 🟢 Node.js + Express.js
 🛢️ MySQL (Aiven Cloud) + Sequelize ORM
 🔑 JWT Auth (Access + Refresh Tokens)
 📧 SMTP (Hostinger) – Emails & OTPs
 
 🤖 AI/ML (Future Scope)
-
 👤 Face Recognition (OpenCV, Python)
 👥 Crowd Detection (YOLOv5, CCTV Heatmaps)
 
+🗄️ Database
+env
+Copy code
 # Database
 DB_HOST=your_db_host
 DB_PORT=your_db_port
@@ -84,19 +83,25 @@ SMTP_USER=your_smtp_user
 SMTP_PASS=your_smtp_pass
 TO_EMAIL=your_admin_email
 
-
 🚀 Getting Started
 Backend
+bash
+Copy code
 cd Backend
 npm install
 node index.js
 
 Frontend
+bash
+Copy code
 cd Frontend
 npm install
 npm run dev
 
+
 🔄 System Flow
+mermaid
+Copy code
 flowchart TD
     A[👤 Pilgrim / Admin / Volunteer] -->|Web/Mobile| B[🌐 React Frontend]
     B -->|REST API / WebSocket| C[⚡ Express Backend]
@@ -109,9 +114,8 @@ flowchart TD
 📧 Email: harshmanmode79@gmail.com
 🔗 LinkedIn: Harsh Manmode
 
-
-<img width="1896" height="1079" alt="image" src="https://github.com/user-attachments/assets/c4b553b9-129b-4f21-8a1d-17050f5a5fd0" />
-<img width="1904" height="919" alt="image" src="https://github.com/user-attachments/assets/edd976cb-6dc4-4ec4-aafa-7e2dede27423" />
-<img width="1533" height="908" alt="image" src="https://github.com/user-attachments/assets/2183c63d-bc9f-4d69-a35f-3c6c6bbe44d1" />
-
+📸 Screenshots
+![Dashboard Screenshot](https://github.com/user-attachments/assets/c4b553b9-129b-4f21-8a1d-17050f5a5fd0)
+![Dashboard Screenshot](https://github.com/user-attachments/assets/c4b553b9-129b-4f21-8a1d-17050f5a5fd0)
+![Dashboard Screenshot](https://github.com/user-attachments/assets/2183c63d-bc9f-4d69-a35f-3c6c6bbe44d1)
 
