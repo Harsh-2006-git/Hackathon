@@ -17,7 +17,7 @@ This project is built for **Simhastha 2028** under the theme **Smart Mobility & 
 - ✅ Live Darshan Streaming & Real-Time Notices  
 - ✅ Universal Access for Elderly & Divyangjan  
 
-🔗 **Hosted Link:** [Click Here](https://ujjainyatra-harsh09.vercel.app/)  
+🔗 **Hosted Link:https://ujjain-yatra-harsh09.vercel.app/)  
 
 ![Dashboard Screenshot](https://github.com/user-attachments/assets/b05370ab-00fc-4f7a-9b06-03bf9f6517b9)
 
