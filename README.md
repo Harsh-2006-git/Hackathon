@@ -1,13 +1,13 @@
-<h1 align="center">🌍 Ujjain Yatra – Smart Pilgrimage Assistance System</h1>
+<h1 align="center">🌍Smart Pilgrimage Assistance System</h1>
 
 <p align="center">
-  🚀 Digital Solutions for <b>Simhastha 2028</b> – Safer, Smarter, Seamless  
+  🚀Safer, Smarter, Seamless  
 </p>
 
 ---
 
 ## ✨ Overview  
-This project is built for **Simhastha 2028** under the theme **Smart Mobility & Access Management**.  
+This project is built under **Smart Mobility & Access Management**.  
 
 💡 It provides:  
 - ✅ Smart Ticketing & QR Code Access  
